@@ -61,11 +61,22 @@ const ContactSection = () => {
 
             <div className="space-y-4">
               <a
-                href="mailto:mohit.kumar162534@gmail.com"
+                href="https://leetcode.com/u/Mohit_Kumar_Rath/"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="flex items-center gap-4 glass-card rounded-xl p-4 hover:glow-border transition-all"
               >
-                <Mail className="text-primary" size={20} />
-                <span className="text-foreground text-sm">mohit.kumar162534@gmail.com</span>
+                <Code className="text-primary" size={20} />
+                <span className="text-foreground text-sm">LeetCode Profile</span>
+              </a>
+              <a
+                href="https://github.com/Mohitkumar44"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 glass-card rounded-xl p-4 hover:glow-border transition-all"
+              >
+                <Github className="text-primary" size={20} />
+                <span className="text-foreground text-sm">GitHub Profile</span>
               </a>
               <a
                 href="https://www.linkedin.com/in/mohit-kumar-84354032a/"
@@ -75,24 +86,6 @@ const ContactSection = () => {
               >
                 <Linkedin className="text-primary" size={20} />
                 <span className="text-foreground text-sm">LinkedIn Profile</span>
-              </a>
-              <a
-                href="https://github.com/Mohitkumar44"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 glass-card rounded-xl p-4 hover:glow-border transition-all"
-              >
-              <Github className="text-primary" size={20} />
-                <span className="text-foreground text-sm">GitHub Profile</span>
-              </a>
-              <a
-                href="https://leetcode.com/u/Mohit_Kumar_Rath/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-4 glass-card rounded-xl p-4 hover:glow-border transition-all"
-              >
-                <Code className="text-primary" size={20} />
-                <span className="text-foreground text-sm">LeetCode Profile</span>
               </a>
             </div>
           </motion.div>
