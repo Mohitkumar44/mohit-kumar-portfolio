@@ -1,14 +1,35 @@
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, Send } from "lucide-react";
+import { Mail, Linkedin, Github, Send, CheckCircle } from "lucide-react";
 import { useState } from "react";
+import emailjs from "@emailjs/browser";
+
+const SERVICE_ID = "service_n64gr5j";
+const TEMPLATE_ID = "template_n3j9roc";
+const PUBLIC_KEY = "vDp6zV3u-flS-iBiH";
 
 const ContactSection = () => {
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
+  const [sending, setSending] = useState(false);
+  const [sent, setSent] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const mailtoLink = `mailto:mohit.kumar162534@gmail.com?subject=Portfolio Contact from ${formData.name}&body=${formData.message}%0A%0AFrom: ${formData.email}`;
-    window.open(mailtoLink);
+    setSending(true);
+    try {
+      await emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+        from_name: formData.name,
+        from_email: formData.email,
+        message: formData.message,
+      }, PUBLIC_KEY);
+      setSent(true);
+      setFormData({ name: "", email: "", message: "" });
+      setTimeout(() => setSent(false), 4000);
+    } catch (error) {
+      console.error("EmailJS error:", error);
+      alert("Failed to send message. Please try again.");
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -110,9 +131,16 @@ const ContactSection = () => {
             </div>
             <button
               type="submit"
-              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              disabled={sending}
+              className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity disabled:opacity-60"
             >
-              Send Message <Send size={16} />
+              {sent ? (
+                <>Message Sent! <CheckCircle size={16} /></>
+              ) : sending ? (
+                "Sending..."
+              ) : (
+                <>Send Message <Send size={16} /></>
+              )}
             </button>
           </motion.form>
         </div>
