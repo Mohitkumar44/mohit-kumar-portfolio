@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Mail, Linkedin, Github, Send, CheckCircle } from "lucide-react";
+import { Mail, Linkedin, Github, Send, CheckCircle, Code } from "lucide-react";
 import { useState } from "react";
 import emailjs from "@emailjs/browser";
 
@@ -82,8 +82,17 @@ const ContactSection = () => {
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 glass-card rounded-xl p-4 hover:glow-border transition-all"
               >
-                <Github className="text-primary" size={20} />
+              <Github className="text-primary" size={20} />
                 <span className="text-foreground text-sm">GitHub Profile</span>
+              </a>
+              <a
+                href="https://leetcode.com/u/Mohit_Kumar_Rath/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-4 glass-card rounded-xl p-4 hover:glow-border transition-all"
+              >
+                <Code className="text-primary" size={20} />
+                <span className="text-foreground text-sm">LeetCode Profile</span>
               </a>
             </div>
           </motion.div>

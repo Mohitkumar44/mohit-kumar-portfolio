@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin, Mail, Code } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -29,6 +29,14 @@ const Footer = () => {
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             <Mail size={18} />
+          </a>
+          <a
+            href="https://leetcode.com/u/Mohit_Kumar_Rath/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Code size={18} />
           </a>
         </div>
       </div>
