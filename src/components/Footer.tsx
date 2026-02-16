@@ -1,4 +1,4 @@
-import { Github, Linkedin, Mail, Code } from "lucide-react";
+import { Github, Linkedin, Code } from "lucide-react";
 
 const Footer = () => {
   return (
@@ -8,6 +8,14 @@ const Footer = () => {
           © {new Date().getFullYear()} Mohit Kumar. All rights reserved.
         </p>
         <div className="flex items-center gap-4">
+          <a
+            href="https://leetcode.com/u/Mohit_Kumar_Rath/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            <Code size={18} />
+          </a>
           <a
             href="https://github.com/Mohitkumar44"
             target="_blank"
@@ -23,20 +31,6 @@ const Footer = () => {
             className="text-muted-foreground hover:text-primary transition-colors"
           >
             <Linkedin size={18} />
-          </a>
-          <a
-            href="mailto:mohit.kumar162534@gmail.com"
-            className="text-muted-foreground hover:text-primary transition-colors"
-          >
-            <Mail size={18} />
-          </a>
-          <a
-            href="https://leetcode.com/u/Mohit_Kumar_Rath/"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-muted-foreground hover:text-primary transition-colors"
-          >
-            <Code size={18} />
           </a>
         </div>
       </div>
