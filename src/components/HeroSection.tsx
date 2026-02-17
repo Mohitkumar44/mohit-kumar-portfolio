@@ -4,7 +4,7 @@ import profileImg from "@/assets/profile.jpg";
 
 const HeroSection = () => {
   return (
-    <section id="home" className="min-h-screen flex items-center section-padding pt-32">
+    <section id="home" aria-label="Introduction" className="min-h-screen flex items-center section-padding pt-32">
       <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
         {/* Left - Text */}
         <motion.div

@@ -2,7 +2,7 @@ import { Github, Linkedin, Code } from "lucide-react";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-border section-padding py-10">
+    <footer aria-label="Footer" className="border-t border-border section-padding py-10">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <p className="text-sm text-muted-foreground">
           © {new Date().getFullYear()} Mohit Kumar. All rights reserved.
