@@ -13,15 +13,15 @@ const skills = [
     category: "Programming Languages",
     items: [
       { name: "C++", level: 90 },
-      { name: "Python", level: 75 },
+      { name: "Python", level: 70 },
       { name: "C", level: 80 },
-      { name: "Java", level: 65 },
+      { name: "Java", level: 20 },
     ],
   },
   {
     category: "Core Expertise",
     items: [
-      { name: "Data Structures & Algorithms", level: 85 },
+      { name: "Data Structures & Algorithms", level: 30 },
     ],
   },
 ];
