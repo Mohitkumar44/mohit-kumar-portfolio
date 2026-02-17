@@ -3,7 +3,7 @@ import { Code2, Target, Lightbulb } from "lucide-react";
 
 const AboutSection = () => {
   return (
-    <section id="about" className="section-padding">
+    <section id="about" aria-label="About Mohit Kumar" className="section-padding">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}

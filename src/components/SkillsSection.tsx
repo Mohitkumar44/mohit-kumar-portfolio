@@ -28,7 +28,7 @@ const skills = [
 
 const SkillsSection = () => {
   return (
-    <section id="skills" className="section-padding">
+    <section id="skills" aria-label="Technical Skills" className="section-padding">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
