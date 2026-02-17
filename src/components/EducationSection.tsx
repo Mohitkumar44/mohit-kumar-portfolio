@@ -9,8 +9,8 @@ const EducationSection = () => {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-        >
+          transition={{ duration: 0.6 }}>
+
           <p className="text-primary text-sm font-medium mb-2">Education</p>
           <h2 className="text-3xl md:text-5xl font-heading font-bold mb-12">
             Academic <span className="text-gradient">Journey</span>
@@ -22,8 +22,8 @@ const EducationSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="max-w-2xl"
-        >
+          className="max-w-2xl">
+
           <div className="glass-card rounded-2xl p-8 glow-border">
             <div className="flex items-start gap-5">
               <div className="p-3 rounded-xl bg-primary/10 shrink-0">
@@ -39,17 +39,17 @@ const EducationSection = () => {
                 <p className="text-muted-foreground text-sm mt-2">
                   Expected Graduation: 2028
                 </p>
-                <p className="text-muted-foreground text-sm mt-3 leading-relaxed">
-                  Focusing on Computer Science fundamentals, Data Structures & Algorithms, and Full
-                  Stack Web Development alongside the core engineering curriculum.
+                <p className="text-muted-foreground text-sm mt-3 leading-relaxed">Focusing on Information Technology fundamentals, Data Structures & Algorithms, and Full Stack Web Development alongside the core engineering curriculum.
+
+
                 </p>
               </div>
             </div>
           </div>
         </motion.div>
       </div>
-    </section>
-  );
+    </section>);
+
 };
 
 export default EducationSection;
