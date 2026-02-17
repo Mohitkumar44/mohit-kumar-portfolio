@@ -24,16 +24,11 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}>
 
-            <p className="text-muted-foreground leading-relaxed mb-6">Mohit is a B.Tech student at Rajkiya Engineering College Banda, passionate about Full Stack Development and problem solving using Data Structures & Algorithms. He is focused on building efficient, scalable web applications while continuously improving his programming expertise.
-
-
-
-
+            <p className="text-muted-foreground leading-relaxed mb-6">
+              Mohit Kumar is a B.Tech undergraduate at Rajkiya Engineering College, Banda, specializing in Computer Science. His primary areas of focus include Full Stack Web Development and algorithmic problem-solving using Data Structures & Algorithms. He is committed to engineering efficient, scalable, and maintainable web applications.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              With a strong foundation in C++, Python, and web technologies, Mohit aims to become a
-              skilled Full Stack Engineer. He is constantly exploring new technologies and frameworks
-              to stay ahead in the ever-evolving tech landscape.
+              With proficiency in C++, Python, and modern web technologies, Mohit is dedicated to advancing his expertise as a Full Stack Engineer. He actively pursues emerging technologies, frameworks, and industry best practices to remain at the forefront of the software development landscape.
             </p>
           </motion.div>
 
@@ -48,17 +43,17 @@ const AboutSection = () => {
             {
               icon: Code2,
               title: "Full Stack Development",
-              desc: "Building end-to-end web applications with modern technologies."
+              desc: "Architecting and developing end-to-end web applications using modern technology stacks."
             },
             {
               icon: Target,
-              title: "DSA Expert",
-              desc: "Strong problem-solving skills with Data Structures & Algorithms in C++."
+              title: "Algorithmic Problem Solving",
+              desc: "Proficient in Data Structures & Algorithms with a focus on optimized solutions in C++."
             },
             {
               icon: Lightbulb,
-              title: "Continuous Learner",
-              desc: "Always exploring new frameworks, tools, and best practices."
+              title: "Continuous Professional Development",
+              desc: "Actively researching and adopting emerging frameworks, tools, and engineering best practices."
             }].
             map((item) =>
             <div key={item.title} className="glass-card rounded-xl p-5 flex gap-4 items-start">

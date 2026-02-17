@@ -55,8 +55,7 @@ const ContactSection = () => {
             transition={{ duration: 0.6 }}
           >
             <p className="text-muted-foreground mb-8">
-              Feel free to reach out for collaborations, opportunities, or just a friendly chat
-              about technology and development!
+              I welcome inquiries regarding professional collaborations, development opportunities, or discussions on technology and software engineering.
             </p>
 
             <div className="space-y-4">
