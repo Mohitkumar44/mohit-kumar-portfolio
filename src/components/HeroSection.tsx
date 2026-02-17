@@ -45,9 +45,9 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-4">
             <a
               href="#projects"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity">
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity">View Projects
 
-              View Portfolio <ExternalLink size={16} />
+              <ExternalLink size={16} />
             </a>
             <a
               href="#contact"
