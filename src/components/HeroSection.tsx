@@ -89,7 +89,7 @@ const HeroSection = () => {
             <span className="text-gradient">Kumar</span>
             <br />
             <span className="text-gradient text-3xl md:text-4xl lg:text-5xl">
-              <TypewriterText text="Data Structures & Algorithms and Full Stack Developer" />
+              <TypewriterText phrases={["Data Structures & Algorithms", "Full Stack Developer"]} />
             </span>
           </h1>
 
