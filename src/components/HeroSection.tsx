@@ -4,34 +4,60 @@ import { ArrowDown, ExternalLink } from "lucide-react";
 import profileImg from "@/assets/profile.jpg";
 
 interface TypewriterTextProps {
-  text: string;
-  speed?: number;
+  phrases: string[];
+  typeSpeed?: number;
+  eraseSpeed?: number;
+  pauseDuration?: number;
 }
 
-const TypewriterText = ({ text, speed = 60 }: TypewriterTextProps) => {
+const TypewriterText = ({
+  phrases,
+  typeSpeed = 80,
+  eraseSpeed = 50,
+  pauseDuration = 1500,
+}: TypewriterTextProps) => {
   const [displayed, setDisplayed] = useState("");
-  const [done, setDone] = useState(false);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [isTyping, setIsTyping] = useState(true);
+  const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
-    let index = 0;
-    const interval = setInterval(() => {
-      setDisplayed(text.slice(0, index + 1));
-      index += 1;
-      if (index >= text.length) {
-        clearInterval(interval);
-        setDone(true);
+    const currentPhrase = phrases[phraseIndex];
+    let interval: NodeJS.Timeout;
+
+    if (isTyping) {
+      if (displayed.length < currentPhrase.length) {
+        interval = setInterval(() => {
+          setDisplayed(currentPhrase.slice(0, displayed.length + 1));
+        }, typeSpeed);
+      } else {
+        interval = setTimeout(() => {
+          setIsTyping(false);
+        }, pauseDuration) as unknown as NodeJS.Timeout;
       }
-    }, speed);
+    } else {
+      if (displayed.length > 0) {
+        interval = setInterval(() => {
+          setDisplayed(displayed.slice(0, -1));
+        }, eraseSpeed);
+      } else {
+        interval = setTimeout(() => {
+          setPhraseIndex((prev) => (prev + 1) % phrases.length);
+          setIsTyping(true);
+        }, 300) as unknown as NodeJS.Timeout;
+      }
+    }
 
     return () => clearInterval(interval);
-  }, [text, speed]);
+  }, [displayed, isTyping, phraseIndex, phrases, typeSpeed, eraseSpeed, pauseDuration]);
 
   return (
     <span className="inline">
       {displayed}
       <motion.span
-        animate={{ opacity: done ? [1, 0, 1] : 1 }}
-        transition={done ? { repeat: Infinity, duration: 0.8 } : {}}
+        animate={{ opacity: showCursor ? [1, 0, 1] : 0 }}
+        transition={{ repeat: Infinity, duration: 0.8 }}
+        onAnimationStart={() => setShowCursor(true)}
         className="inline-block w-[3px] h-[1em] bg-primary align-middle ml-1"
         aria-hidden="true"
       />
