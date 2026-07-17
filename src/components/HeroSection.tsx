@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import { ArrowDown, ExternalLink } from "lucide-react";
 import profileImg from "@/assets/profile.jpg";
 
