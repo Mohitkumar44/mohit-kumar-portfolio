@@ -3,6 +3,42 @@ import { useState, useEffect } from "react";
 import { ArrowDown, ExternalLink } from "lucide-react";
 import profileImg from "@/assets/profile.jpg";
 
+interface TypewriterTextProps {
+  text: string;
+  speed?: number;
+}
+
+const TypewriterText = ({ text, speed = 60 }: TypewriterTextProps) => {
+  const [displayed, setDisplayed] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    let index = 0;
+    const interval = setInterval(() => {
+      setDisplayed(text.slice(0, index + 1));
+      index += 1;
+      if (index >= text.length) {
+        clearInterval(interval);
+        setDone(true);
+      }
+    }, speed);
+
+    return () => clearInterval(interval);
+  }, [text, speed]);
+
+  return (
+    <span className="inline">
+      {displayed}
+      <motion.span
+        animate={{ opacity: done ? [1, 0, 1] : 1 }}
+        transition={done ? { repeat: Infinity, duration: 0.8 } : {}}
+        className="inline-block w-[3px] h-[1em] bg-primary align-middle ml-1"
+        aria-hidden="true"
+      />
+    </span>
+  );
+};
+
 const HeroSection = () => {
   return (
     <section id="home" aria-label="Introduction" className="min-h-screen flex items-center section-padding pt-32">
