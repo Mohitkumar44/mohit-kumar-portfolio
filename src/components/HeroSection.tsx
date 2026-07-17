@@ -10,6 +10,7 @@ interface TypewriterTextProps {
   pauseDuration?: number;
   loop?: boolean;
   onComplete?: () => void;
+  className?: string;
 }
 
 const TypewriterText = ({
@@ -19,6 +20,7 @@ const TypewriterText = ({
   pauseDuration = 1500,
   loop = true,
   onComplete,
+  className = "",
 }: TypewriterTextProps) => {
   const [displayed, setDisplayed] = useState("");
   const [phraseIndex, setPhraseIndex] = useState(0);
