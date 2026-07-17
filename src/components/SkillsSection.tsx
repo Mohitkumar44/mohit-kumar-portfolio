@@ -3,26 +3,15 @@ import { motion } from "framer-motion";
 const skills = [
   {
     category: "Frontend Development",
-    items: [
-      { name: "HTML", level: 90 },
-      { name: "CSS", level: 85 },
-      { name: "JavaScript", level: 70 },
-    ],
+    items: ["HTML", "CSS", "JavaScript"],
   },
   {
     category: "Programming Languages",
-    items: [
-      { name: "C++", level: 90 },
-      { name: "Python", level: 70 },
-      { name: "C", level: 80 },
-      { name: "Java", level: 20 },
-    ],
+    items: ["C++", "Python", "C", "Java"],
   },
   {
     category: "Core Expertise",
-    items: [
-      { name: "Data Structures & Algorithms", level: 30 },
-    ],
+    items: ["Data Structures & Algorithms", "Object-Oriented Programming", "Problem Solving"],
   },
 ];
 
@@ -53,25 +42,21 @@ const SkillsSection = () => {
               className="glass-card rounded-2xl p-6"
             >
               <h3 className="font-heading font-semibold text-foreground mb-6">{group.category}</h3>
-              <div className="space-y-5">
-                {group.items.map((skill) => (
-                  <div key={skill.name}>
-                    <div className="flex justify-between text-sm mb-2">
-                      <span className="text-foreground">{skill.name}</span>
-                      <span className="text-muted-foreground">{skill.level}%</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-secondary overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.level}%` }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 1, delay: 0.2 }}
-                        className="h-full rounded-full bg-primary"
-                      />
-                    </div>
-                  </div>
+              <ul className="space-y-3">
+                {group.items.map((skill, index) => (
+                  <motion.li
+                    key={skill}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: index * 0.1 }}
+                    className="flex items-center gap-3 text-sm text-foreground"
+                  >
+                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    {skill}
+                  </motion.li>
                 ))}
-              </div>
+              </ul>
             </motion.div>
           ))}
         </div>
