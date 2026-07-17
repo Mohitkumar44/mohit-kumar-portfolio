@@ -89,7 +89,7 @@ const TypewriterText = ({
       <span className="invisible" aria-hidden="true">
         {longestPhrase}
       </span>
-      <span className="absolute left-0 top-0">
+      <span className={`absolute left-0 top-0 ${className}`}>
         {displayed}
         {showCursor && (
           <span
