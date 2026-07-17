@@ -55,12 +55,15 @@ const HeroSection = () => {
             <span className="text-sm text-primary font-medium">Open to Opportunities</span>
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6">
+          <h1
+            className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6"
+            aria-label="Mohit Kumar, Data Structures & Algorithms and Full Stack Developer"
+          >
             Mohit{" "}
             <span className="text-gradient">Kumar</span>
             <br />
-            <span className="text-muted-foreground text-3xl md:text-4xl lg:text-5xl">
-              Full Stack Developer
+            <span className="text-gradient text-3xl md:text-4xl lg:text-5xl">
+              <TypewriterText text="Data Structures & Algorithms and Full Stack Developer" />
             </span>
           </h1>
 
