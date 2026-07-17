@@ -98,3 +98,12 @@
     @apply px-6 py-20 md:px-12 lg:px-24;
   }
 }
+
+@keyframes blink-cursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.animate-blink-cursor {
+  animation: blink-cursor 0.8s step-end infinite;
+}
