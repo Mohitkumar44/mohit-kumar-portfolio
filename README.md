@@ -1,102 +1,89 @@
 # 👋 Hi, I'm Mohit Kumar
 
-<div align="center">
+Welcome to the repository of my personal portfolio website.
 
-### Information Technology Student | Aspiring Software Engineer | DSA Enthusiast
+This portfolio reflects who I am as an Information Technology student, what I'm currently learning, and the projects I've built along the way. I created it to have a place where I can showcase my work, skills, and progress as I continue growing as a software developer.
 
-[🌐 Portfolio](https://mohitkrportfolio.netlify.app) •
-[💼 LinkedIn](https://www.linkedin.com/in/mohit-kumar-84354032a/) •
-[💻 GitHub](https://github.com/Mohitkumar44)
+## 🌐 Live Website
 
-</div>
+**Portfolio:**  
+👉 https://mohitkrportfolio.netlify.app
 
----
+## About Me
 
-## 🚀 About Me
+I'm currently pursuing a **B.Tech in Information Technology** at **Rajkiya Engineering College Banda (AKTU)**.
 
-I am an Information Technology undergraduate at **Rajkiya Engineering College Banda (AKTU)**, passionate about solving challenging problems and building impactful software.
+I enjoy solving programming problems and building projects that help me improve my development skills. My current focus is strengthening my understanding of **Data Structures & Algorithms** while continuing to learn modern web technologies.
 
-My primary focus is on **Data Structures & Algorithms**, **Competitive Programming**, and strengthening my software development skills. Alongside DSA, I enjoy building responsive web applications and continuously exploring modern technologies.
+I'm always looking for opportunities to learn something new and become a better developer every day.
 
-I believe in learning by building, solving, and improving every day.
+## Tech Stack
 
----
-
-## 🎯 Current Focus
-
-- 📚 Mastering Data Structures & Algorithms
-- 💻 Solving LeetCode problems consistently
-- 🚀 Preparing for Software Development Internships
-- 🌱 Improving System Design & Development Skills
-- 🤝 Contributing to Open Source Projects
-
----
-
-## 🛠️ Tech Stack
-
-### Programming Languages
 - C++
 - C
 - Python
+- HTML
+- CSS
 - JavaScript
-
-### Web Development
-- HTML5
-- CSS3
-- JavaScript
-
-### Tools & Technologies
-- Git
-- GitHub
+- Git & GitHub
 - VS Code
-- Netlify
 
----
+## Portfolio Features
 
-## 🌐 Portfolio
-
-Visit my portfolio:
-
-### 🔗 https://mohitkrportfolio.netlify.app
-
-It showcases:
+- Clean and responsive design
+- About Me section
+- Skills
 - Projects
-- Technical Skills
-- Achievements
-- Contact Information
+- Contact information
+- Mobile-friendly layout
+
+## Project Structure
+
+```
+src/
+public/
+components/
+pages/
+assets/
+```
+
+## Running Locally
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Mohitkumar44/<repository-name>.git
+```
+
+Move into the project directory:
+
+```bash
+cd <repository-name>
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Start the development server:
+
+```bash
+npm run dev
+```
+
+## Connect With Me
+
+🌐 Portfolio  
+https://mohitkrportfolio.netlify.app
+
+💼 LinkedIn  
+https://www.linkedin.com/in/mohit-kumar-84354032a/
+
+💻 GitHub  
+https://github.com/Mohitkumar44
 
 ---
 
-## 📈 GitHub Stats
-
-<p align="center">
-
-<img height="170" src="https://github-readme-stats.vercel.app/api?username=Mohitkumar44&show_icons=true&theme=tokyonight"/>
-
-<img height="170" src="https://github-readme-stats.vercel.app/api/top-langs/?username=Mohitkumar44&layout=compact&theme=tokyonight"/>
-
-</p>
-
-<p align="center">
-
-<img src="https://github-readme-streak-stats.herokuapp.com/?user=Mohitkumar44&theme=tokyonight"/>
-
-</p>
-
----
-
-## 📫 Connect With Me
-
-- 🌐 Portfolio: https://mohitkrportfolio.netlify.app
-- 💼 LinkedIn: https://www.linkedin.com/in/mohit-kumar-84354032a/
-- 💻 GitHub: https://github.com/Mohitkumar44
-
----
-
-## 💡 Quote
-
-> "Consistency beats intensity. Every problem solved today builds tomorrow's opportunities."
-
----
-
-⭐ If you like my work, consider giving a star to my repositories.
+Thank you for visiting my portfolio! If you have any suggestions or feedback, feel free to connect with me.
