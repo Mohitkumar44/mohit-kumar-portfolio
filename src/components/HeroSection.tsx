@@ -131,7 +131,7 @@ const HeroSection = () => {
             <span className="text-foreground">Mohit </span>
             <span className="text-primary">Kumar</span>
             <br />
-            <span className="text-2xl md:text-3xl lg:text-4xl">
+            <span className="text-xl md:text-2xl lg:text-3xl">
               <TypewriterText
                 phrases={["Data Structures & Algorithms", "Full Stack Developer", "AI Engineer"]}
                 typeSpeed={55}
