@@ -128,9 +128,10 @@ const HeroSection = () => {
             className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6"
             aria-label="Mohit Kumar, Data Structures & Algorithms, Full Stack Developer, and AI Engineer"
           >
-            <span className="text-gradient">Mohit Kumar</span>
+            <span className="text-foreground">Mohit </span>
+            <span className="text-primary">Kumar</span>
             <br />
-            <span className="text-3xl md:text-4xl lg:text-5xl">
+            <span className="text-2xl md:text-3xl lg:text-4xl">
               <TypewriterText
                 phrases={["Data Structures & Algorithms", "Full Stack Developer", "AI Engineer"]}
                 typeSpeed={55}
