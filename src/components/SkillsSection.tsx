@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { ChevronRight } from "lucide-react";
 
 const skills = [
   {
@@ -52,7 +53,7 @@ const SkillsSection = () => {
                     transition={{ duration: 0.4, delay: index * 0.1 }}
                     className="flex items-center gap-3 text-sm text-foreground"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-primary shrink-0" />
                     {skill}
                   </motion.li>
                 ))}
