@@ -84,12 +84,12 @@ const TypewriterText = ({
   ]);
 
   return (
-    <span className="relative inline-block">
+    <span className="relative inline-block whitespace-nowrap">
       {/* Hidden sizing ghost prevents layout shift while typing/erasing */}
-      <span className="invisible" aria-hidden="true">
+      <span className="invisible whitespace-nowrap" aria-hidden="true">
         {longestPhrase}
       </span>
-      <span className={`absolute left-0 top-0 ${className}`}>
+      <span className={`absolute left-0 top-0 whitespace-nowrap ${className}`}>
         {displayed}
         {showCursor && (
           <span
