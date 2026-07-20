@@ -1,11 +1,11 @@
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useState, type ComponentType } from "react";
 
 const GitHubCalendar = lazy(async () => {
   const mod: any = await import("react-github-calendar");
   return { default: mod.default ?? mod };
-}) as unknown as React.ComponentType<any>;
+}) as unknown as ComponentType<any>;
 
 const USERNAME = "Mohitkumar44";
 
