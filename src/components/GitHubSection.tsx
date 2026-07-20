@@ -2,7 +2,7 @@ import { lazy, Suspense, useState } from "react";
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
 
-const GitHubCalendar = lazy(async () => {
+const GitHubCalendar: any = lazy(async () => {
   const mod: any = await import("react-github-calendar");
   return { default: mod.default ?? mod };
 });
