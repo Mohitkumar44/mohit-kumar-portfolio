@@ -2,7 +2,9 @@ import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
 import { Suspense, lazy, useState } from "react";
 
-const GitHubCalendar = lazy(() => import("react-github-calendar"));
+const GitHubCalendar = lazy(() =>
+  import("react-github-calendar").then((m) => ({ default: m.default ?? (m as any) }))
+);
 
 const USERNAME = "Mohitkumar44";
 
