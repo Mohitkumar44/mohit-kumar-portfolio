@@ -2,9 +2,10 @@ import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
 import { Suspense, lazy, useState } from "react";
 
-const GitHubCalendar = lazy(() =>
-  import("react-github-calendar").then((m) => ({ default: m.default ?? (m as any) }))
-);
+const GitHubCalendar = lazy(async () => {
+  const mod: any = await import("react-github-calendar");
+  return { default: mod.default ?? mod };
+});
 
 const USERNAME = "Mohitkumar44";
 
