@@ -5,7 +5,7 @@ import { Suspense, lazy, useState } from "react";
 const GitHubCalendar = lazy(async () => {
   const mod: any = await import("react-github-calendar");
   return { default: mod.default ?? mod };
-});
+}) as unknown as React.ComponentType<any>;
 
 const USERNAME = "Mohitkumar44";
 
