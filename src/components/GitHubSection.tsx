@@ -80,17 +80,15 @@ const GitHubSection = () => {
           </div>
 
           <div className="overflow-x-auto flex justify-center">
-            <Suspense fallback={<CalendarSkeleton />}>
-              <GitHubCalendar
-                username={GITHUB_USERNAME}
-                theme={calendarTheme}
-                colorScheme="dark"
-                fontSize={12}
-                blockSize={12}
-                blockMargin={4}
-                errorMessage="Unable to load GitHub contributions right now."
-              />
-            </Suspense>
+            <GitHubCalendar
+              username={GITHUB_USERNAME}
+              theme={calendarTheme}
+              colorScheme="dark"
+              fontSize={12}
+              blockSize={12}
+              blockMargin={4}
+              errorMessage="Unable to load GitHub contributions right now."
+            />
           </div>
         </motion.div>
 
