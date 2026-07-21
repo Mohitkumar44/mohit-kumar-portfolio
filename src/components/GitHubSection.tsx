@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
-import GitHubCalendar from "react-github-calendar";
+import { GitHubCalendar } from "react-github-calendar";
 
 const GITHUB_USERNAME = "Mohitkumar44";
 const GITHUB_URL = "https://github.com/Mohitkumar44";
