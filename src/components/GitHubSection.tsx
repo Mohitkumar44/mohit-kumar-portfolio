@@ -1,11 +1,7 @@
-import { lazy, Suspense, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Github, ExternalLink } from "lucide-react";
-
-const GitHubCalendar: any = lazy(async () => {
-  const mod: any = await import("react-github-calendar");
-  return { default: mod.default ?? mod };
-});
+import { GitHubCalendar } from "react-github-calendar";
 
 const GITHUB_USERNAME = "Mohitkumar44";
 const GITHUB_URL = "https://github.com/Mohitkumar44";
@@ -84,17 +80,15 @@ const GitHubSection = () => {
           </div>
 
           <div className="overflow-x-auto flex justify-center">
-            <Suspense fallback={<CalendarSkeleton />}>
-              <GitHubCalendar
-                username={GITHUB_USERNAME}
-                theme={calendarTheme}
-                colorScheme="dark"
-                fontSize={12}
-                blockSize={12}
-                blockMargin={4}
-                errorMessage="Unable to load GitHub contributions right now."
-              />
-            </Suspense>
+            <GitHubCalendar
+              username={GITHUB_USERNAME}
+              theme={calendarTheme}
+              colorScheme="dark"
+              fontSize={12}
+              blockSize={12}
+              blockMargin={4}
+              errorMessage="Unable to load GitHub contributions right now."
+            />
           </div>
         </motion.div>
 
