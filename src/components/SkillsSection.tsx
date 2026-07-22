@@ -1,18 +1,57 @@
 import { motion } from "framer-motion";
-import { ChevronRight } from "lucide-react";
+import {
+  Code2,
+  Braces,
+  FileCode,
+  Terminal,
+  FileType,
+  Palette,
+  Atom,
+  Wind,
+  GitBranch,
+  Github,
+  MonitorPlay,
+  ServerCog,
+  LucideIcon,
+} from "lucide-react";
 
-const skills = [
-  {
-    category: "Frontend Development",
-    items: ["HTML", "CSS", "JavaScript"],
-  },
+interface Skill {
+  name: string;
+  Icon: LucideIcon;
+}
+
+interface SkillGroup {
+  category: string;
+  items: Skill[];
+}
+
+const groups: SkillGroup[] = [
   {
     category: "Programming Languages",
-    items: ["C++", "Python", "C", "Java"],
+    items: [
+      { name: "C++", Icon: Code2 },
+      { name: "C", Icon: Terminal },
+      { name: "Python", Icon: FileCode },
+      { name: "JavaScript", Icon: Braces },
+    ],
   },
   {
-    category: "Core Expertise",
-    items: ["Data Structures & Algorithms", "Object-Oriented Programming", "Problem Solving"],
+    category: "Frontend",
+    items: [
+      { name: "HTML", Icon: FileType },
+      { name: "CSS", Icon: Palette },
+      { name: "React", Icon: Atom },
+      { name: "Tailwind CSS", Icon: Wind },
+    ],
+  },
+  {
+    category: "Tools",
+    items: [
+      { name: "Git", Icon: GitBranch },
+      { name: "GitHub", Icon: Github },
+      { name: "VS Code", Icon: MonitorPlay },
+      { name: "Linux", Icon: ServerCog },
+    ],
   },
 ];
 
@@ -27,37 +66,42 @@ const SkillsSection = () => {
           transition={{ duration: 0.6 }}
         >
           <p className="text-primary text-sm font-medium mb-2">Skills</p>
-          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-12">
+          <h2 className="text-3xl md:text-5xl font-heading font-bold mb-12 tracking-tight">
             My <span className="text-gradient">Expertise</span>
           </h2>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {skills.map((group, i) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {groups.map((group, gi) => (
             <motion.div
               key={group.category}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
-              className="glass-card rounded-2xl p-6"
+              transition={{ duration: 0.5, delay: gi * 0.1 }}
+              className="glass-card rounded-2xl p-6 hover:glow-border transition-all duration-300"
             >
-              <h3 className="font-heading font-semibold text-foreground mb-6">{group.category}</h3>
-              <ul className="space-y-3">
-                {group.items.map((skill, index) => (
-                  <motion.li
-                    key={skill}
-                    initial={{ opacity: 0, x: -10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+              <h3 className="font-heading font-semibold text-foreground mb-5 text-lg">
+                {group.category}
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                {group.items.map((skill, i) => (
+                  <motion.div
+                    key={skill.name}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: index * 0.1 }}
-                    className="flex items-center gap-3 text-sm text-foreground"
+                    transition={{ duration: 0.35, delay: i * 0.05 }}
+                    whileHover={{ y: -3, scale: 1.02 }}
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg bg-secondary/50 border border-border hover:border-primary/60 hover:bg-primary/5 transition-all cursor-default"
                   >
-                    <ChevronRight className="w-4 h-4 text-primary shrink-0" />
-                    {skill}
-                  </motion.li>
+                    <skill.Icon className="text-primary shrink-0" size={16} />
+                    <span className="text-sm font-medium text-foreground truncate">
+                      {skill.name}
+                    </span>
+                  </motion.div>
                 ))}
-              </ul>
+              </div>
             </motion.div>
           ))}
         </div>
