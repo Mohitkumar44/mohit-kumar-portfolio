@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo, useRef } from "react";
-import { ArrowDown, ExternalLink } from "lucide-react";
+import { ArrowDown, ArrowRight, Download, Github, Linkedin, Code } from "lucide-react";
 import profileImg from "@/assets/profile.jpg";
 
 interface TypewriterTextProps {
@@ -9,24 +9,21 @@ interface TypewriterTextProps {
   eraseSpeed?: number;
   pauseDuration?: number;
   loop?: boolean;
-  onComplete?: () => void;
   className?: string;
 }
 
 const TypewriterText = ({
   phrases,
-  typeSpeed = 80,
-  eraseSpeed = 50,
+  typeSpeed = 55,
+  eraseSpeed = 30,
   pauseDuration = 1500,
   loop = true,
-  onComplete,
   className = "",
 }: TypewriterTextProps) => {
   const [displayed, setDisplayed] = useState("");
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
-  const [showCursor, setShowCursor] = useState(true);
-  const completedRef = useRef(false);
+  const timerRef = useRef<number>();
 
   const longestPhrase = useMemo(
     () => phrases.reduce((a, b) => (a.length >= b.length ? a : b), ""),
@@ -35,80 +32,67 @@ const TypewriterText = ({
 
   useEffect(() => {
     const currentPhrase = phrases[phraseIndex];
-    let timer: number | undefined;
-
     if (isTyping) {
       if (displayed.length < currentPhrase.length) {
-        timer = window.setInterval(() => {
+        timerRef.current = window.setTimeout(() => {
           setDisplayed(currentPhrase.slice(0, displayed.length + 1));
         }, typeSpeed);
       } else {
-        timer = window.setTimeout(() => {
-          setIsTyping(false);
-        }, pauseDuration);
+        timerRef.current = window.setTimeout(() => setIsTyping(false), pauseDuration);
       }
     } else {
-      if (displayed.length > 0) {
-        if (loop) {
-          timer = window.setInterval(() => {
-            setDisplayed(displayed.slice(0, -1));
-          }, eraseSpeed);
-        } else if (!completedRef.current) {
-          completedRef.current = true;
-          onComplete?.();
-          timer = window.setTimeout(() => {
-            setShowCursor(false);
-          }, 1200);
-        }
+      if (displayed.length > 0 && loop) {
+        timerRef.current = window.setTimeout(() => {
+          setDisplayed(displayed.slice(0, -1));
+        }, eraseSpeed);
       } else {
-        timer = window.setTimeout(() => {
+        timerRef.current = window.setTimeout(() => {
           setPhraseIndex((prev) => (prev + 1) % phrases.length);
           setIsTyping(true);
         }, 300);
       }
     }
-
-    return () => {
-      if (timer) window.clearInterval(timer);
-    };
-  }, [
-    displayed,
-    isTyping,
-    phraseIndex,
-    phrases,
-    typeSpeed,
-    eraseSpeed,
-    pauseDuration,
-    loop,
-    onComplete,
-  ]);
+    return () => window.clearTimeout(timerRef.current);
+  }, [displayed, isTyping, phraseIndex, phrases, typeSpeed, eraseSpeed, pauseDuration, loop]);
 
   return (
     <span className="relative inline-block whitespace-nowrap">
-      {/* Hidden sizing ghost prevents layout shift while typing/erasing */}
       <span className="invisible whitespace-nowrap" aria-hidden="true">
         {longestPhrase}
       </span>
       <span className={`absolute left-0 top-0 whitespace-nowrap ${className}`}>
         {displayed}
-        {showCursor && (
-          <span
-            className="inline-block w-[3px] h-[1em] bg-primary align-middle ml-1 animate-blink-cursor"
-            aria-hidden="true"
-          />
-        )}
+        <span
+          className="inline-block w-[3px] h-[1em] bg-primary align-middle ml-1 animate-blink-cursor"
+          aria-hidden="true"
+        />
       </span>
     </span>
   );
 };
+
+const socials = [
+  { href: "https://github.com/Mohitkumar44", label: "GitHub", Icon: Github },
+  { href: "https://www.linkedin.com/in/mohit-kumar-84354032a/", label: "LinkedIn", Icon: Linkedin },
+  { href: "https://leetcode.com/u/Mohit_Kumar_Rath/", label: "LeetCode", Icon: Code },
+];
 
 const HeroSection = () => {
   return (
     <section
       id="home"
       aria-label="Introduction"
-      className="min-h-screen flex items-center section-padding pt-32"
+      className="relative min-h-dvh flex items-center section-padding pt-32 overflow-hidden"
     >
+      {/* Ambient background glow */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 -z-10"
+      >
+        <div className="absolute top-1/4 -left-24 w-96 h-96 rounded-full bg-primary/10 blur-3xl" />
+        <div className="absolute bottom-1/4 -right-24 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
+      </div>
+
       <div className="max-w-7xl mx-auto w-full grid md:grid-cols-2 gap-12 items-center">
         {/* Left - Text */}
         <motion.div
@@ -117,74 +101,67 @@ const HeroSection = () => {
           transition={{ duration: 0.7 }}
           className="order-2 md:order-1"
         >
-          <div className="flex items-center gap-2 mb-6">
-            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-            <span className="text-sm text-primary font-medium">
-              Open to Opportunities
+          <div className="inline-flex items-center gap-2 mb-6 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full rounded-full bg-primary opacity-75 animate-ping" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
+            <span className="text-xs text-primary font-medium">Open to Internships & SDE Roles</span>
           </div>
 
           <h1
-            className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6"
-            aria-label="Mohit Kumar, Data Structures & Algorithms, Full Stack Developer, and AI Engineer"
+            className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-[1.05] mb-6 tracking-tight"
+            aria-label="Mohit Kumar — Information Technology Student and Competitive Programmer"
           >
             <span className="text-foreground">Mohit </span>
             <span className="text-primary">Kumar</span>
             <br />
-            <span className="text-xl md:text-2xl lg:text-3xl">
+            <span className="text-xl md:text-2xl lg:text-3xl font-semibold">
               <TypewriterText
                 phrases={["Data Structures & Algorithms", "Full Stack Developer", "AI Engineer"]}
-                typeSpeed={55}
-                eraseSpeed={30}
                 className="text-muted-foreground"
               />
             </span>
           </h1>
 
-          <p className="text-lg text-muted-foreground mb-4 max-w-lg">
-            Developing scalable, high-performance web applications with a strong foundation in Data Structures & Algorithms.
+          <p className="text-base md:text-lg text-foreground/90 mb-3 max-w-xl font-medium">
+            Information Technology Student · Competitive Programmer · C++ · Data Structures &amp; Algorithms · Frontend Development
+          </p>
+          <p className="text-sm md:text-base text-muted-foreground mb-8 max-w-xl leading-relaxed">
+            I enjoy solving algorithmic problems, building responsive web applications, and continuously improving my software engineering skills.
           </p>
 
           <div className="flex flex-wrap gap-3 mb-8">
-            {["Full Stack Development", "Data Structures & Algorithms", "B.Tech — Class of 2028"].map((tag) => (
-              <span
-                key={tag}
-                className="px-4 py-1.5 rounded-full text-sm border border-border text-muted-foreground"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-
-          <div className="flex flex-wrap gap-4">
+            <a
+              href="/resume.pdf"
+              download
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              <Download size={16} className="transition-transform group-hover:translate-y-0.5" />
+              Download Resume
+            </a>
             <a
               href="#projects"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-primary-foreground font-medium hover:opacity-90 transition-opacity"
+              className="group inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border bg-secondary/40 text-foreground font-semibold hover:border-primary hover:bg-secondary/60 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
             >
               View Projects
-              <ExternalLink size={16} />
-            </a>
-            <a
-              href="#contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl border border-border text-foreground hover:border-primary transition-colors"
-            >
-              Get in Touch
+              <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>
 
-          <div className="flex gap-8 mt-12">
-            <div>
-              <p className="text-3xl font-heading font-bold text-gradient">5+</p>
-              <p className="text-sm text-muted-foreground">Projects Built</p>
-            </div>
-            <div>
-              <p className="text-3xl font-heading font-bold text-gradient">DSA</p>
-              <p className="text-sm text-muted-foreground">Problem Solver</p>
-            </div>
-            <div>
-              <p className="text-3xl font-heading font-bold text-gradient">2028</p>
-              <p className="text-sm text-muted-foreground">B.Tech Grad</p>
-            </div>
+          <div className="flex items-center gap-3">
+            {socials.map(({ href, label, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${label} profile (opens in new tab)`}
+                className="p-2.5 rounded-lg border border-border bg-secondary/40 text-muted-foreground hover:text-primary hover:border-primary hover:-translate-y-0.5 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              >
+                <Icon size={18} />
+              </a>
+            ))}
           </div>
         </motion.div>
 
@@ -195,19 +172,28 @@ const HeroSection = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="order-1 md:order-2 flex justify-center"
         >
-          <div className="relative">
-            <div className="w-72 h-80 md:w-80 md:h-96 rounded-2xl overflow-hidden glow-border">
+          <motion.div
+            animate={{ y: [0, -12, 0] }}
+            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
+            className="relative"
+          >
+            <div
+              aria-hidden="true"
+              className="absolute -inset-6 rounded-[2rem] bg-primary/20 blur-3xl"
+            />
+            <div className="relative w-64 h-72 md:w-80 md:h-96 rounded-2xl overflow-hidden glow-border">
               <img
                 src={profileImg}
-                alt="Mohit Kumar - Full Stack Developer"
+                alt="Mohit Kumar — B.Tech IT Student and Full Stack Developer"
                 className="w-full h-full object-cover"
+                loading="eager"
               />
             </div>
-            <div className="absolute -bottom-4 -right-4 glass-card rounded-xl px-4 py-2">
-              <p className="text-sm font-medium text-foreground">B.Tech Student</p>
-              <p className="text-xs text-primary">REC Banda</p>
+            <div className="absolute -bottom-4 -right-4 glass-card rounded-xl px-4 py-2 shadow-lg">
+              <p className="text-sm font-semibold text-foreground">B.Tech Student</p>
+              <p className="text-xs text-primary">REC Banda · 2028</p>
             </div>
-          </div>
+          </motion.div>
         </motion.div>
       </div>
 
@@ -215,8 +201,9 @@ const HeroSection = () => {
         animate={{ y: [0, 10, 0] }}
         transition={{ repeat: Infinity, duration: 2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden md:block"
+        aria-hidden="true"
       >
-        <ArrowDown className="text-muted-foreground" size={24} />
+        <ArrowDown className="text-muted-foreground" size={22} />
       </motion.div>
     </section>
   );
