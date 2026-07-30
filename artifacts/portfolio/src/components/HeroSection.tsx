@@ -23,7 +23,7 @@ const TypewriterText = ({
   const [displayed, setDisplayed] = useState("");
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(true);
-  const timerRef = useRef<number>();
+  const timerRef = useRef<number | undefined>(undefined);
 
   const longestPhrase = useMemo(
     () => phrases.reduce((a, b) => (a.length >= b.length ? a : b), ""),
