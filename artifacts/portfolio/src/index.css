@@ -5,7 +5,58 @@
 @tailwind utilities;
 
 @layer base {
+  /* ── Light mode (default) ───────────────────────────────── */
   :root {
+    --background: 210 20% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    --primary: 145 70% 32%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 220 14% 93%;
+    --secondary-foreground: 222 47% 20%;
+
+    --muted: 220 14% 93%;
+    --muted-foreground: 220 10% 42%;
+
+    --accent: 145 70% 32%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 87%;
+    --input: 220 13% 87%;
+    --ring: 145 70% 32%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 145 70% 32%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 14% 93%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 220 13% 87%;
+    --sidebar-ring: 145 70% 32%;
+
+    --font-heading: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+
+    --gradient-primary: linear-gradient(135deg, hsl(145 70% 32%), hsl(160 65% 26%));
+    --gradient-card: linear-gradient(145deg, hsl(0 0% 100%), hsl(220 14% 97%));
+    --shadow-glow: 0 0 30px hsl(145 70% 32% / 0.12);
+    --shadow-card: 0 4px 24px hsl(220 20% 20% / 0.08);
+  }
+
+  /* ── Dark mode ──────────────────────────────────────────── */
+  .dark {
     --background: 220 20% 7%;
     --foreground: 0 0% 95%;
 
@@ -34,8 +85,6 @@
     --input: 220 15% 18%;
     --ring: 145 80% 42%;
 
-    --radius: 0.75rem;
-
     --sidebar-background: 220 18% 10%;
     --sidebar-foreground: 0 0% 95%;
     --sidebar-primary: 145 80% 42%;
@@ -45,9 +94,6 @@
     --sidebar-border: 220 15% 18%;
     --sidebar-ring: 145 80% 42%;
 
-    --font-heading: 'Space Grotesk', sans-serif;
-    --font-body: 'Inter', sans-serif;
-
     --gradient-primary: linear-gradient(135deg, hsl(145 80% 42%), hsl(160 70% 35%));
     --gradient-card: linear-gradient(145deg, hsl(220 18% 12%), hsl(220 18% 8%));
     --shadow-glow: 0 0 30px hsl(145 80% 42% / 0.15);
@@ -56,8 +102,21 @@
 }
 
 @layer base {
-  * {
+  /* Smooth transitions for every element when theme switches */
+  *,
+  *::before,
+  *::after {
     @apply border-border;
+    transition-property: background-color, border-color, color, box-shadow;
+    transition-duration: 350ms;
+    transition-timing-function: ease;
+  }
+
+  /* Don't animate layout or transform properties during theme switch */
+  *:where([class*="animate-"]),
+  *:where([class*="transition-"]) {
+    transition-property: background-color, border-color, color, box-shadow,
+      transform, opacity;
   }
 
   body {
@@ -75,9 +134,18 @@
 }
 
 @layer components {
+  /* ── Dark mode glass card ─────────────────────────────── */
   .glass-card {
     background: linear-gradient(145deg, hsl(220 18% 12% / 0.8), hsl(220 18% 8% / 0.6));
     border: 1px solid hsl(220 15% 18%);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-card);
+  }
+
+  /* ── Light mode glass card ────────────────────────────── */
+  :root:not(.dark) .glass-card {
+    background: hsl(0 0% 100% / 0.85);
+    border: 1px solid hsl(220 13% 87%);
     backdrop-filter: blur(12px);
     box-shadow: var(--shadow-card);
   }
@@ -97,6 +165,26 @@
   .section-padding {
     @apply px-6 py-20 md:px-12 lg:px-24;
   }
+
+  /* ── Theme toggle button ──────────────────────────────── */
+  .theme-toggle {
+    @apply relative flex items-center justify-center w-9 h-9 rounded-lg
+           border border-border bg-secondary/50 text-muted-foreground
+           hover:bg-secondary hover:text-foreground
+           focus:outline-none focus-visible:ring-2 focus-visible:ring-primary;
+    transition: background-color 200ms ease, color 200ms ease,
+                border-color 200ms ease, transform 200ms ease,
+                box-shadow 200ms ease;
+  }
+
+  .theme-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 3px hsl(145 80% 42% / 0.15);
+  }
+
+  .theme-toggle:active {
+    transform: scale(0.95);
+  }
 }
 
 @keyframes blink-cursor {
@@ -106,4 +194,14 @@
 
 .animate-blink-cursor {
   animation: blink-cursor 0.8s step-end infinite;
+}
+
+/* Sun/moon icon spin on mount */
+@keyframes icon-spin-in {
+  from { transform: rotate(-90deg) scale(0.6); opacity: 0; }
+  to   { transform: rotate(0deg) scale(1);   opacity: 1; }
+}
+
+.icon-enter {
+  animation: icon-spin-in 300ms cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }

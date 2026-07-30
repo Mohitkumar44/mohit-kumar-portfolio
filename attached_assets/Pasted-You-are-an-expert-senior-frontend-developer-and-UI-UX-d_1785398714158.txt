@@ -1,0 +1,47 @@
+You are an expert senior frontend developer and UI/UX designer.
+
+I have an existing website. I want you to modify it by adding a premium-quality Dark Mode and Light Mode theme switch.
+
+Requirements:
+
+1. Add a modern theme toggle button in the top-right corner of the navbar.
+2. The toggle should have smooth animations (300–500ms transitions).
+3. Use a sun icon for Light Mode and a moon icon for Dark Mode.
+4. The theme should switch instantly without requiring a page refresh.
+5. Save the user's theme preference in localStorage so the selected theme remains after refreshing or reopening the website.
+6. If no preference is saved, automatically detect the user's system preference using prefers-color-scheme.
+7. Every section of the website must adapt correctly:
+   - Navbar
+   - Hero section
+   - Cards
+   - Buttons
+   - Forms
+   - Footer
+   - Images (if necessary, add subtle overlays instead of changing images)
+   - Backgrounds
+   - Text colors
+   - Borders
+   - Shadows
+8. Maintain excellent contrast and accessibility (WCAG-friendly colors).
+9. Preserve my existing layout, responsiveness, and animations.
+10. Make the dark theme elegant rather than pure black (use modern dark gray tones like #0f172a or #111827).
+11. The light theme should look clean and professional with subtle shadows.
+12. Add smooth color transitions to all components.
+13. The toggle button should have a beautiful hover animation and a small scaling effect.
+14. The implementation should be optimized for performance and clean code.
+15. Organize the code properly with reusable CSS variables (or Tailwind theme variables if applicable).
+16. Remove any hardcoded colors and replace them with theme variables whenever possible.
+17. Ensure the website looks premium on desktop, tablet, and mobile devices.
+18. Do not break any existing functionality.
+
+Deliverables:
+- Update all necessary HTML/JSX, CSS/Tailwind, and JavaScript/TypeScript files.
+- Explain what files you changed.
+- Keep the code clean and production-ready.
+- If the project uses React, Next.js, or Vite, follow best practices for that framework.
+- If Tailwind CSS is used, implement the theme using Tailwind's recommended dark mode approach.
+- If plain CSS is used, implement using CSS custom properties (variables).
+- Do not rewrite unrelated parts of the website.
+- Preserve my current design while making it significantly more modern and polished.
+
+Before making changes, first inspect my existing project structure and determine the framework (React, Next.js, Vite, HTML/CSS/JS, etc.), then implement the most appropriate solution.

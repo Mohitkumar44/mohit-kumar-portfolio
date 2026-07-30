@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Menu, X, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const navLinks = [
   { label: "Home", href: "#home" },
@@ -12,6 +13,52 @@ const navLinks = [
   { label: "LeetCode", href: "#leetcode" },
   { label: "Contact", href: "#contact" },
 ];
+
+function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  // Avoid hydration mismatch — only render after mount
+  useEffect(() => setMounted(true), []);
+  if (!mounted) return <div className="w-9 h-9" />;
+
+  const isDark = resolvedTheme === "dark";
+
+  return (
+    <button
+      onClick={() => setTheme(isDark ? "light" : "dark")}
+      className="theme-toggle"
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        {isDark ? (
+          <motion.span
+            key="sun"
+            initial={{ rotate: -90, scale: 0.5, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: 90, scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            className="flex items-center justify-center"
+          >
+            <Sun size={16} strokeWidth={2} />
+          </motion.span>
+        ) : (
+          <motion.span
+            key="moon"
+            initial={{ rotate: 90, scale: 0.5, opacity: 0 }}
+            animate={{ rotate: 0, scale: 1, opacity: 1 }}
+            exit={{ rotate: -90, scale: 0.5, opacity: 0 }}
+            transition={{ duration: 0.3, ease: [0.34, 1.56, 0.64, 1] }}
+            className="flex items-center justify-center"
+          >
+            <Moon size={16} strokeWidth={2} />
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </button>
+  );
+}
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
@@ -48,7 +95,7 @@ const Navbar = () => {
       aria-label="Primary"
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? "backdrop-blur-xl bg-background/70 border-b border-border/60 shadow-[0_4px_24px_rgba(0,0,0,0.35)] py-2.5"
+          ? "backdrop-blur-xl bg-background/70 border-b border-border/60 shadow-[0_4px_24px_rgba(0,0,0,0.12)] py-2.5"
           : "py-4 bg-transparent"
       }`}
     >
@@ -92,16 +139,22 @@ const Navbar = () => {
           >
             Hire Me
           </a>
+          <div className="ml-2">
+            <ThemeToggle />
+          </div>
         </div>
 
-        <button
-          onClick={() => setMobileOpen(!mobileOpen)}
-          className="lg:hidden text-foreground p-2 rounded-md hover:bg-secondary transition-colors"
-          aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+        <div className="flex items-center gap-2 lg:hidden">
+          <ThemeToggle />
+          <button
+            onClick={() => setMobileOpen(!mobileOpen)}
+            className="text-foreground p-2 rounded-md hover:bg-secondary transition-colors"
+            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-expanded={mobileOpen}
+          >
+            {mobileOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+        </div>
       </div>
 
       {mobileOpen && (
