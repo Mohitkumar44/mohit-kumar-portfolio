@@ -60,16 +60,11 @@ const fetchLeetCode = async (): Promise<LeetCodeStats> => {
   const profile: any = profileRes.status === "fulfilled" ? profileRes.value : {};
   const badgesData: any = badgesRes.status === "fulfilled" ? badgesRes.value : {};
 
-  // submissionCalendar may be an object or JSON string
   let calendar: Record<string, number> | undefined;
   const rawCal = main?.submissionCalendar;
   if (rawCal) {
     if (typeof rawCal === "string") {
-      try {
-        calendar = JSON.parse(rawCal);
-      } catch {
-        calendar = undefined;
-      }
+      try { calendar = JSON.parse(rawCal); } catch { calendar = undefined; }
     } else if (typeof rawCal === "object") {
       calendar = rawCal;
     }
@@ -178,8 +173,9 @@ const CircularProgress = ({
         />
         <defs>
           <linearGradient id="lcGrad" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="hsl(145 80% 42%)" />
-            <stop offset="100%" stopColor="hsl(160 70% 35%)" />
+            {/* CSS custom properties work inside SVG style attributes */}
+            <stop offset="0%"   style={{ stopColor: "hsl(var(--primary))" }} />
+            <stop offset="100%" style={{ stopColor: "hsl(var(--primary))", stopOpacity: 0.65 }} />
           </linearGradient>
         </defs>
       </svg>
@@ -199,18 +195,20 @@ const DifficultyBar = ({
   label,
   solved,
   total,
-  color,
+  colorVar,
   animate,
   delay,
 }: {
   label: string;
   solved: number;
   total: number;
-  color: string;
+  /** CSS custom property name pair, e.g. "easy" → uses --diff-easy and --diff-easy-end */
+  colorVar: "easy" | "medium" | "hard";
   animate: boolean;
   delay: number;
 }) => {
   const pct = total > 0 ? Math.min((solved / total) * 100, 100) : 0;
+  const bg = `linear-gradient(90deg, var(--diff-${colorVar}), var(--diff-${colorVar}-end))`;
   return (
     <div>
       <div className="flex items-center justify-between mb-2 text-sm">
@@ -225,13 +223,24 @@ const DifficultyBar = ({
           animate={animate ? { width: `${pct}%` } : { width: 0 }}
           transition={{ duration: 1.2, delay, ease: "easeOut" }}
           className="h-full rounded-full"
-          style={{ background: color }}
+          style={{ background: bg }}
         />
       </div>
     </div>
   );
 };
 
+/* Rating tier — uses Tailwind dark-mode variants so contrast is right on both themes */
+const getRatingTier = (rating: number): { label: string; color: string } => {
+  if (rating < 1400) return { label: "Newcomer",         color: "text-muted-foreground" };
+  if (rating < 1600) return { label: "Pupil",            color: "text-emerald-600 dark:text-emerald-400" };
+  if (rating < 1900) return { label: "Specialist",       color: "text-sky-600 dark:text-sky-400" };
+  if (rating < 2100) return { label: "Expert",           color: "text-violet-600 dark:text-violet-400" };
+  if (rating < 2400) return { label: "Candidate Master", color: "text-orange-600 dark:text-orange-400" };
+  return               { label: "Guardian",              color: "text-red-600 dark:text-red-400" };
+};
+
+/* ── Shared premium stat card ───────────────────────────── */
 const StatCard = ({
   icon: Icon,
   label,
@@ -250,70 +259,45 @@ const StatCard = ({
   valueClass?: string;
 }) => (
   <motion.div
-    whileHover={{ y: -4 }}
-    transition={{ type: "spring", stiffness: 250, damping: 20 }}
-    className="glass-card rounded-xl p-5 hover:glow-border transition-all duration-300"
+    whileHover={{ y: -4, scale: 1.01 }}
+    transition={{ type: "spring", stiffness: 280, damping: 22 }}
+    className="stat-card"
   >
     <div className="flex items-center gap-3 mb-3">
-      <div className="p-2 rounded-lg bg-primary/10">
-        <Icon className="text-primary" size={18} />
+      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 shrink-0">
+        <Icon className="text-primary" size={16} />
       </div>
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">
+      <p className="text-xs uppercase tracking-wide font-medium text-muted-foreground">
         {label}
       </p>
     </div>
-    <p
-      className={`text-2xl font-heading font-bold tabular-nums ${
-        valueClass ?? "text-foreground"
-      }`}
-    >
-      <AnimatedNumber
-        value={value}
-        start={animate}
-        suffix={suffix}
-        decimals={decimals}
-      />
+    <p className={`text-2xl font-heading font-bold tabular-nums ${valueClass ?? "text-foreground"}`}>
+      <AnimatedNumber value={value} start={animate} suffix={suffix} decimals={decimals} />
     </p>
   </motion.div>
 );
 
 const SkeletonCard = () => (
-  <div className="glass-card rounded-xl p-5 h-[110px] animate-pulse" />
+  <div className="stat-card h-[110px] animate-pulse bg-secondary/30" />
 );
 
-// LeetCode rating tier colors
-const getRatingTier = (rating: number) => {
-  if (rating < 1400) return { label: "Newcomer", color: "text-zinc-300" };
-  if (rating < 1600) return { label: "Pupil", color: "text-emerald-400" };
-  if (rating < 1900) return { label: "Specialist", color: "text-sky-400" };
-  if (rating < 2100) return { label: "Expert", color: "text-violet-400" };
-  if (rating < 2400) return { label: "Candidate Master", color: "text-orange-400" };
-  return { label: "Guardian", color: "text-red-400" };
-};
-
-// ---------- Activity Heatmap ----------
+/* ── Activity Heatmap ────────────────────────────────────── */
 type DayCell = { date: Date; key: string; count: number };
 
 const buildYearCells = (calendar: Record<string, number>): DayCell[] => {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  // End on Saturday of current week for a clean grid
   const end = new Date(today);
   end.setDate(end.getDate() + (6 - end.getDay()));
-  // Start ~52 weeks back on a Sunday
   const start = new Date(end);
   start.setDate(start.getDate() - 52 * 7 - 6);
-
   const cells: DayCell[] = [];
   const cursor = new Date(start);
   while (cursor <= end) {
     const ts = Math.floor(cursor.getTime() / 1000);
     const key = cursor.toISOString().slice(0, 10);
-    // LeetCode keys are seconds at UTC midnight; try day exact match & +/- offsets
     const count =
-      calendar[String(ts)] ??
-      calendar[String(ts - (ts % 86400))] ??
-      0;
+      calendar[String(ts)] ?? calendar[String(ts - (ts % 86400))] ?? 0;
     cells.push({ date: new Date(cursor), key, count });
     cursor.setDate(cursor.getDate() + 1);
   }
@@ -321,7 +305,7 @@ const buildYearCells = (calendar: Record<string, number>): DayCell[] => {
 };
 
 const bucketClass = (count: number) => {
-  if (!count) return "bg-secondary/60";
+  if (!count)  return "bg-secondary/60";
   if (count < 2) return "bg-primary/25";
   if (count < 4) return "bg-primary/45";
   if (count < 7) return "bg-primary/70";
@@ -336,26 +320,16 @@ const ActivityHeatmap = ({
   animate: boolean;
 }) => {
   const cells = useMemo(() => buildYearCells(calendar), [calendar]);
-
-  // Split into weeks (columns of 7)
   const weeks: DayCell[][] = [];
-  for (let i = 0; i < cells.length; i += 7) {
-    weeks.push(cells.slice(i, i + 7));
-  }
+  for (let i = 0; i < cells.length; i += 7) weeks.push(cells.slice(i, i + 7));
 
-  // Month labels
   const monthLabels = useMemo(() => {
     const labels: { index: number; label: string }[] = [];
     let lastMonth = -1;
     weeks.forEach((week, i) => {
-      const firstDay = week[0]?.date;
-      if (!firstDay) return;
-      const m = firstDay.getMonth();
-      if (m !== lastMonth) {
-        labels.push({
-          index: i,
-          label: firstDay.toLocaleString("en-US", { month: "short" }),
-        });
+      const m = week[0]?.date.getMonth();
+      if (m !== undefined && m !== lastMonth) {
+        labels.push({ index: i, label: week[0]!.date.toLocaleString("en-US", { month: "short" }) });
         lastMonth = m;
       }
     });
@@ -364,23 +338,14 @@ const ActivityHeatmap = ({
 
   const totalSubmissions = cells.reduce((a, c) => a + c.count, 0);
   const activeDays = cells.filter((c) => c.count > 0).length;
-
-  // Current streak (from today back)
   let currentStreak = 0;
   for (let i = cells.length - 1; i >= 0; i--) {
     if (cells[i].date > new Date()) continue;
     if (cells[i].count > 0) currentStreak++;
     else break;
   }
-  // Max streak
-  let maxStreak = 0;
-  let run = 0;
-  cells.forEach((c) => {
-    if (c.count > 0) {
-      run++;
-      maxStreak = Math.max(maxStreak, run);
-    } else run = 0;
-  });
+  let maxStreak = 0, run = 0;
+  cells.forEach((c) => { if (c.count > 0) { run++; maxStreak = Math.max(maxStreak, run); } else run = 0; });
 
   return (
     <div>
@@ -388,92 +353,56 @@ const ActivityHeatmap = ({
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <CalendarIcon size={16} className="text-primary" />
           <span>
-            <span className="text-foreground font-semibold">
-              {formatNum(totalSubmissions)}
-            </span>{" "}
+            <span className="text-foreground font-semibold">{formatNum(totalSubmissions)}</span>{" "}
             submissions in the past year
           </span>
         </div>
         <div className="flex items-center gap-4 text-xs text-muted-foreground">
-          <span>
-            Active days:{" "}
-            <span className="text-foreground font-semibold">{activeDays}</span>
-          </span>
+          <span>Active days: <span className="text-foreground font-semibold">{activeDays}</span></span>
           <span className="flex items-center gap-1">
             <Flame size={12} className="text-primary" />
-            Current streak:{" "}
-            <span className="text-foreground font-semibold">
-              {currentStreak}
-            </span>
+            Streak: <span className="text-foreground font-semibold ml-1">{currentStreak}</span>
           </span>
           <span className="hidden sm:inline">
-            Max streak:{" "}
-            <span className="text-foreground font-semibold">{maxStreak}</span>
+            Max: <span className="text-foreground font-semibold">{maxStreak}</span>
           </span>
         </div>
       </div>
 
       <div className="overflow-x-auto pb-2">
         <div className="inline-block min-w-full">
-          {/* Month labels */}
           <div
             className="grid text-[10px] text-muted-foreground mb-1 ml-6"
-            style={{
-              gridTemplateColumns: `repeat(${weeks.length}, 12px)`,
-              columnGap: 3,
-            }}
+            style={{ gridTemplateColumns: `repeat(${weeks.length}, 12px)`, columnGap: 3 }}
           >
             {weeks.map((_, i) => {
               const label = monthLabels.find((m) => m.index === i);
-              return (
-                <div key={i} className="h-3">
-                  {label ? label.label : ""}
-                </div>
-              );
+              return <div key={i} className="h-3">{label ? label.label : ""}</div>;
             })}
           </div>
 
           <div className="flex gap-[3px]">
-            {/* Day labels */}
             <div className="flex flex-col gap-[3px] mr-1 text-[10px] text-muted-foreground w-4">
               {["", "Mon", "", "Wed", "", "Fri", ""].map((d, i) => (
-                <div key={i} className="h-3 leading-3">
-                  {d}
-                </div>
+                <div key={i} className="h-3 leading-3">{d}</div>
               ))}
             </div>
-
             {weeks.map((week, wi) => (
               <div key={wi} className="flex flex-col gap-[3px]">
                 {Array.from({ length: 7 }).map((_, di) => {
                   const cell = week[di];
-                  if (!cell)
-                    return (
-                      <div key={di} className="w-3 h-3 rounded-[3px]" />
-                    );
+                  if (!cell) return <div key={di} className="w-3 h-3 rounded-[3px]" />;
                   const dateLabel = cell.date.toLocaleDateString("en-US", {
-                    weekday: "short",
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
+                    weekday: "short", month: "short", day: "numeric", year: "numeric",
                   });
                   return (
                     <motion.div
                       key={di}
                       initial={{ opacity: 0, scale: 0.6 }}
-                      animate={
-                        animate ? { opacity: 1, scale: 1 } : { opacity: 0 }
-                      }
-                      transition={{
-                        duration: 0.25,
-                        delay: Math.min(wi * 0.008, 0.6),
-                      }}
-                      title={`${cell.count} submission${
-                        cell.count === 1 ? "" : "s"
-                      } on ${dateLabel}`}
-                      className={`w-3 h-3 rounded-[3px] ${bucketClass(
-                        cell.count
-                      )} hover:ring-1 hover:ring-primary/60 transition`}
+                      animate={animate ? { opacity: 1, scale: 1 } : { opacity: 0 }}
+                      transition={{ duration: 0.25, delay: Math.min(wi * 0.008, 0.6) }}
+                      title={`${cell.count} submission${cell.count === 1 ? "" : "s"} on ${dateLabel}`}
+                      className={`w-3 h-3 rounded-[3px] ${bucketClass(cell.count)} hover:ring-1 hover:ring-primary/60 transition`}
                     />
                   );
                 })}
@@ -481,14 +410,10 @@ const ActivityHeatmap = ({
             ))}
           </div>
 
-          {/* Legend */}
           <div className="flex items-center gap-2 mt-3 text-[10px] text-muted-foreground ml-6">
             <span>Less</span>
             {[0, 1, 3, 5, 9].map((c, i) => (
-              <span
-                key={i}
-                className={`w-3 h-3 rounded-[3px] ${bucketClass(c)}`}
-              />
+              <span key={i} className={`w-3 h-3 rounded-[3px] ${bucketClass(c)}`} />
             ))}
             <span>More</span>
           </div>
@@ -498,7 +423,7 @@ const ActivityHeatmap = ({
   );
 };
 
-// ---------- Contest Section ----------
+/* ── Contest Section ─────────────────────────────────────── */
 const ContestSection = ({
   contest,
   animate,
@@ -508,11 +433,9 @@ const ContestSection = ({
 }) => {
   if (!contest) {
     return (
-      <div className="glass-card rounded-xl p-6 text-center">
+      <div className="stat-card text-center py-8">
         <Trophy className="mx-auto text-primary mb-3" size={24} />
-        <p className="text-sm text-muted-foreground">
-          Contest rating is not available yet.
-        </p>
+        <p className="text-sm text-muted-foreground">Contest rating is not available yet.</p>
       </div>
     );
   }
@@ -521,50 +444,34 @@ const ContestSection = ({
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      {/* Contest rating — uses tier color for the number */}
       <motion.div
-        whileHover={{ y: -4 }}
-        transition={{ type: "spring", stiffness: 250, damping: 20 }}
-        className="glass-card rounded-xl p-5 hover:glow-border transition-all duration-300"
+        whileHover={{ y: -4, scale: 1.01 }}
+        transition={{ type: "spring", stiffness: 280, damping: 22 }}
+        className="stat-card"
       >
         <div className="flex items-center gap-3 mb-3">
-          <div className="p-2 rounded-lg bg-primary/10">
-            <Trophy className="text-primary" size={18} />
+          <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-primary/10 shrink-0">
+            <Trophy className="text-primary" size={16} />
           </div>
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
+          <p className="text-xs uppercase tracking-wide font-medium text-muted-foreground">
             Contest Rating
           </p>
         </div>
         <p className={`text-2xl font-heading font-bold tabular-nums ${tier.color}`}>
           <AnimatedNumber value={contest.rating} start={animate} />
         </p>
-        <p className={`text-[11px] mt-1 ${tier.color} opacity-80`}>
+        <p className={`text-[11px] mt-1 font-medium ${tier.color} opacity-75`}>
           {tier.label}
         </p>
       </motion.div>
 
-      <StatCard
-        icon={Award}
-        label="Global Rank"
-        value={contest.globalRanking}
-        animate={animate}
-      />
-      <StatCard
-        icon={TrendingUp}
-        label="Top Percentage"
-        value={contest.topPercentage}
-        suffix="%"
-        decimals={2}
-        animate={animate}
-      />
-      <StatCard
-        icon={Flame}
-        label="Contests"
-        value={contest.attendedContests}
-        animate={animate}
-      />
+      <StatCard icon={Award}     label="Global Rank"     value={contest.globalRanking}  animate={animate} />
+      <StatCard icon={TrendingUp} label="Top Percentage" value={contest.topPercentage}  animate={animate} suffix="%" decimals={2} />
+      <StatCard icon={Flame}     label="Contests"        value={contest.attendedContests} animate={animate} />
 
       {contest.badge && (
-        <div className="col-span-2 md:col-span-4 flex items-center gap-2 px-4 py-3 rounded-xl glass-card">
+        <div className="col-span-2 md:col-span-4 flex items-center gap-2 px-4 py-3 rounded-xl bg-primary/5 border border-primary/20">
           <Award size={16} className="text-primary" />
           <span className="text-sm text-foreground">
             Contest Badge: <span className="font-semibold">{contest.badge}</span>
@@ -575,6 +482,7 @@ const ContestSection = ({
   );
 };
 
+/* ── Main Section ────────────────────────────────────────── */
 const LeetCodeSection = () => {
   const [data, setData] = useState<LeetCodeStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -586,25 +494,16 @@ const LeetCodeSection = () => {
   useEffect(() => {
     let alive = true;
     fetchLeetCode()
-      .then((d) => {
-        if (!alive) return;
-        setData(d);
-      })
+      .then((d) => { if (alive) setData(d); })
       .catch(() => alive && setError(true))
       .finally(() => alive && setLoading(false));
-    return () => {
-      alive = false;
-    };
+    return () => { alive = false; };
   }, []);
 
   const animate = inView && !!data && !loading;
 
   return (
-    <section
-      id="leetcode"
-      aria-label="LeetCode Statistics"
-      className="section-padding"
-    >
+    <section id="leetcode" aria-label="LeetCode Statistics" className="section-padding">
       <div className="max-w-7xl mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -627,12 +526,13 @@ const LeetCodeSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass-card rounded-2xl p-6 md:p-8"
+          className="bg-card border border-border rounded-2xl overflow-hidden"
+          style={{ boxShadow: "var(--shadow-card)" }}
         >
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+          {/* Card header */}
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-5 border-b border-border">
             <div className="flex items-center gap-4">
-              <div className="relative w-14 h-14 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center">
+              <div className="relative w-12 h-12 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center shrink-0">
                 {data?.avatar ? (
                   <img
                     src={data.avatar}
@@ -641,14 +541,14 @@ const LeetCodeSection = () => {
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <Code className="text-primary" size={22} />
+                  <Code className="text-primary" size={20} />
                 )}
               </div>
               <div>
-                <h3 className="font-heading font-semibold text-foreground">
+                <h3 className="font-heading font-semibold text-foreground leading-tight">
                   {LEETCODE_USERNAME}
                 </h3>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {loading
                     ? "Fetching profile…"
                     : error
@@ -664,160 +564,117 @@ const LeetCodeSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="View LeetCode Profile (opens in new tab)"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+                         border border-border bg-secondary/60 text-foreground text-sm font-medium
+                         hover:bg-primary hover:text-primary-foreground hover:border-primary
+                         transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/20"
             >
-              <Code size={16} /> View LeetCode Profile
-              <ExternalLink size={14} />
+              <Code size={15} /> View Profile
+              <ExternalLink size={13} className="opacity-70" />
             </a>
           </div>
 
-          {error && !data ? (
-            <div className="text-center py-12 text-muted-foreground text-sm">
-              Couldn't load LeetCode stats right now. Please try again later.
-            </div>
-          ) : (
-            <>
-              {/* Main grid: circular + difficulty bars */}
-              <div className="grid md:grid-cols-2 gap-8 items-center mb-10">
-                <div className="flex justify-center">
+          <div className="p-6 md:p-8">
+            {error && !data ? (
+              <div className="text-center py-12 text-muted-foreground text-sm">
+                Couldn't load LeetCode stats right now. Please try again later.
+              </div>
+            ) : (
+              <>
+                {/* Main grid: circular + difficulty bars */}
+                <div className="grid md:grid-cols-2 gap-8 items-center mb-10">
+                  <div className="flex justify-center">
+                    {loading || !data ? (
+                      <div className="w-[180px] h-[180px] rounded-full bg-secondary/40 animate-pulse" />
+                    ) : (
+                      <CircularProgress
+                        solved={data.totalSolved}
+                        total={data.totalQuestions ?? 0}
+                        animate={animate}
+                      />
+                    )}
+                  </div>
+
+                  <div className="space-y-5">
+                    {loading || !data ? (
+                      <>
+                        <SkeletonCard />
+                        <SkeletonCard />
+                        <SkeletonCard />
+                      </>
+                    ) : (
+                      <>
+                        <DifficultyBar label="Easy"   solved={data.easySolved}   total={data.easyTotal ?? 0}   colorVar="easy"   animate={animate} delay={0.1} />
+                        <DifficultyBar label="Medium" solved={data.mediumSolved} total={data.mediumTotal ?? 0} colorVar="medium" animate={animate} delay={0.2} />
+                        <DifficultyBar label="Hard"   solved={data.hardSolved}   total={data.hardTotal ?? 0}   colorVar="hard"   animate={animate} delay={0.3} />
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Activity Heatmap */}
+                <div className="mb-10">
+                  <h4 className="font-heading font-semibold text-foreground mb-4">Activity Calendar</h4>
                   {loading || !data ? (
-                    <div className="w-[180px] h-[180px] rounded-full bg-secondary/40 animate-pulse" />
+                    <div className="h-40 rounded-xl bg-secondary/30 animate-pulse" />
+                  ) : data.submissionCalendar && Object.keys(data.submissionCalendar).length > 0 ? (
+                    <div className="rounded-xl border border-border/60 bg-secondary/20 px-4 py-5">
+                      <ActivityHeatmap calendar={data.submissionCalendar} animate={animate} />
+                    </div>
                   ) : (
-                    <CircularProgress
-                      solved={data.totalSolved}
-                      total={data.totalQuestions ?? 0}
-                      animate={animate}
-                    />
+                    <div className="rounded-xl border border-border p-6 text-center text-sm text-muted-foreground">
+                      Submission activity is not available right now.
+                    </div>
                   )}
                 </div>
 
-                <div className="space-y-5">
+                {/* Contest section */}
+                <div className="mb-8">
+                  <h4 className="font-heading font-semibold text-foreground mb-4">Contest Performance</h4>
                   {loading || !data ? (
-                    <>
-                      <SkeletonCard />
-                      <SkeletonCard />
-                      <SkeletonCard />
-                    </>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
+                    </div>
                   ) : (
-                    <>
-                      <DifficultyBar
-                        label="Easy"
-                        solved={data.easySolved}
-                        total={data.easyTotal ?? 0}
-                        color="linear-gradient(90deg,#22c55e,#16a34a)"
-                        animate={animate}
-                        delay={0.1}
-                      />
-                      <DifficultyBar
-                        label="Medium"
-                        solved={data.mediumSolved}
-                        total={data.mediumTotal ?? 0}
-                        color="linear-gradient(90deg,#f59e0b,#d97706)"
-                        animate={animate}
-                        delay={0.2}
-                      />
-                      <DifficultyBar
-                        label="Hard"
-                        solved={data.hardSolved}
-                        total={data.hardTotal ?? 0}
-                        color="linear-gradient(90deg,#ef4444,#b91c1c)"
-                        animate={animate}
-                        delay={0.3}
-                      />
-                    </>
+                    <ContestSection contest={data.contest} animate={animate} />
                   )}
                 </div>
-              </div>
 
-              {/* Activity Heatmap */}
-              <div className="mb-10">
-                <h4 className="font-heading font-semibold text-foreground mb-4">
-                  Activity Calendar
-                </h4>
-                {loading || !data ? (
-                  <div className="glass-card rounded-xl h-40 animate-pulse" />
-                ) : data.submissionCalendar &&
-                  Object.keys(data.submissionCalendar).length > 0 ? (
-                  <ActivityHeatmap
-                    calendar={data.submissionCalendar}
-                    animate={animate}
-                  />
-                ) : (
-                  <div className="glass-card rounded-xl p-6 text-center text-sm text-muted-foreground">
-                    Submission activity is not available right now.
+                {/* Acceptance + Total */}
+                {data?.acceptanceRate ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <StatCard icon={Target} label="Acceptance" value={data.acceptanceRate} suffix="%" animate={animate} decimals={1} />
+                    <StatCard icon={Code}   label="Total Solved" value={data.totalSolved}  animate={animate} />
+                  </div>
+                ) : null}
+
+                {/* Badges */}
+                {data?.badges && data.badges.length > 0 && (
+                  <div className="mt-8">
+                    <h4 className="font-heading font-semibold text-foreground mb-4">Badges</h4>
+                    <div className="flex flex-wrap gap-3">
+                      {data.badges.map((b, i) => (
+                        <motion.div
+                          key={`${b.name}-${i}`}
+                          initial={{ opacity: 0, scale: 0.8 }}
+                          animate={animate ? { opacity: 1, scale: 1 } : {}}
+                          transition={{ delay: 0.1 * i, duration: 0.4 }}
+                          className="flex items-center gap-2 px-3 py-2 rounded-full border border-border bg-secondary/40 text-xs text-foreground"
+                        >
+                          {b.icon ? (
+                            <img src={b.icon} alt="" className="w-5 h-5 rounded-full" loading="lazy" />
+                          ) : (
+                            <Award size={14} className="text-primary" />
+                          )}
+                          <span>{b.name}</span>
+                        </motion.div>
+                      ))}
+                    </div>
                   </div>
                 )}
-              </div>
-
-              {/* Contest section */}
-              <div className="mb-8">
-                <h4 className="font-heading font-semibold text-foreground mb-4">
-                  Contest Performance
-                </h4>
-                {loading || !data ? (
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    {Array.from({ length: 4 }).map((_, i) => (
-                      <SkeletonCard key={i} />
-                    ))}
-                  </div>
-                ) : (
-                  <ContestSection contest={data.contest} animate={animate} />
-                )}
-              </div>
-
-              {/* Extra stat: acceptance */}
-              {data?.acceptanceRate ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <StatCard
-                    icon={Target}
-                    label="Acceptance"
-                    value={data.acceptanceRate}
-                    suffix="%"
-                    animate={animate}
-                    decimals={1}
-                  />
-                  <StatCard
-                    icon={Code}
-                    label="Total Solved"
-                    value={data.totalSolved}
-                    animate={animate}
-                  />
-                </div>
-              ) : null}
-
-              {/* Badges */}
-              {data?.badges && data.badges.length > 0 && (
-                <div className="mt-8">
-                  <h4 className="font-heading font-semibold text-foreground mb-4">
-                    Badges
-                  </h4>
-                  <div className="flex flex-wrap gap-3">
-                    {data.badges.map((b, i) => (
-                      <motion.div
-                        key={`${b.name}-${i}`}
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={animate ? { opacity: 1, scale: 1 } : {}}
-                        transition={{ delay: 0.1 * i, duration: 0.4 }}
-                        className="flex items-center gap-2 px-3 py-2 rounded-full glass-card text-xs text-foreground"
-                      >
-                        {b.icon ? (
-                          <img
-                            src={b.icon}
-                            alt=""
-                            className="w-5 h-5 rounded-full"
-                            loading="lazy"
-                          />
-                        ) : (
-                          <Award size={14} className="text-primary" />
-                        )}
-                        <span>{b.name}</span>
-                      </motion.div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
+              </>
+            )}
+          </div>
         </motion.div>
       </div>
     </section>

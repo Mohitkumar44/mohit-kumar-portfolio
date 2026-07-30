@@ -1,0 +1,155 @@
+The current implementation still does not meet production quality.
+
+Do NOT make small CSS adjustments.
+
+Instead, refactor the theme system completely.
+
+==========================
+1. Theme Switching
+==========================
+
+The current switching animation is still obvious.
+
+Users can clearly see colors changing, making the experience feel cheap.
+
+I want the experience to be similar to:
+
+• Apple
+• Vercel
+• Linear
+• Framer
+• Stripe
+
+Requirements:
+
+- absolutely no flashing
+- no repaint feeling
+- no visible color jumps
+- no layout shift
+- no white flash
+- no component flickering
+- no delayed updates
+
+Implement a professional theme architecture.
+
+Use:
+
+- CSS custom properties
+- html.dark class
+- transition only on colors
+- GPU accelerated transforms
+- requestAnimationFrame if needed
+- disable transitions before first paint
+- enable transitions after hydration
+- preload the correct theme before React mounts
+- avoid unnecessary React re-renders
+
+The page should feel like it instantly changes theme.
+
+==========================
+2. Fix all text colors
+==========================
+
+Some cards become unreadable in Light Mode.
+
+Example:
+
+- Contest Rating number becomes almost white.
+- Some subtitles lose contrast.
+
+Audit the ENTIRE project.
+
+Remove every hardcoded color.
+
+Everything must use semantic theme tokens.
+
+Examples:
+
+--text-primary
+--text-secondary
+--card
+--border
+--background
+--muted
+
+No component should define its own colors.
+
+==========================
+3. GitHub Contribution Card
+==========================
+
+The GitHub contribution section still looks unfinished.
+
+Redesign ONLY this section.
+
+Goals:
+
+- premium
+- elegant
+- modern
+- less empty whitespace
+- better hierarchy
+
+Requirements:
+
+- better card proportions
+- better spacing
+- premium header
+- beautiful graph container
+- subtle gradient
+- modern border
+- elegant shadows
+- improve legend styling
+- improve contribution count typography
+- improve View Profile button
+
+The graph should feel integrated into the card rather than pasted inside it.
+
+Take visual inspiration from GitHub, Vercel Dashboard and Linear.
+
+==========================
+4. LeetCode Section
+==========================
+
+Improve every stat card.
+
+Requirements:
+
+- proper text contrast
+- better spacing
+- premium hover effects
+- beautiful borders
+- smoother shadows
+
+==========================
+5. Animation Quality
+==========================
+
+Every interactive element should have polished micro-interactions.
+
+Cards:
+- lift 4px
+- smoother shadow
+
+Buttons:
+- scale 1.02
+- smoother hover
+
+Theme Toggle:
+- icon morph
+- rotation
+- spring animation
+
+Transitions should use modern easing curves.
+
+==========================
+6. Final Requirement
+==========================
+
+Audit the ENTIRE website.
+
+Find every place where Light Mode or Dark Mode looks inconsistent.
+
+Fix them all.
+
+I want the portfolio to look like a premium SaaS landing page rather than a student project.
