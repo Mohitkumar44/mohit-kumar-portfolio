@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Github, ExternalLink } from "lucide-react";
+import { Github, ExternalLink, GitCommitHorizontal } from "lucide-react";
 import { GitHubCalendar } from "react-github-calendar";
+import { useTheme } from "next-themes";
 
 const GITHUB_USERNAME = "Mohitkumar44";
 const GITHUB_URL = "https://github.com/Mohitkumar44";
-const ACTIVITY_GRAPH_URL = `https://github-readme-activity-graph.vercel.app/graph?username=${GITHUB_USERNAME}&theme=github-compact&hide_border=true&bg_color=15191F`;
 
-// Match portfolio green palette (primary: hsl(145 80% 42%))
+// Theme-aware activity graph URLs
+const ACTIVITY_GRAPH_DARK = `https://github-readme-activity-graph.vercel.app/graph?username=${GITHUB_USERNAME}&theme=github-compact&hide_border=true&bg_color=0d1117`;
+const ACTIVITY_GRAPH_LIGHT = `https://github-readme-activity-graph.vercel.app/graph?username=${GITHUB_USERNAME}&theme=github&hide_border=true&bg_color=f6f8fa`;
+
+// Portfolio green palette: dark = hsl(145 80% 42%), light = hsl(145 70% 32%)
 const calendarTheme = {
-  light: ["#161b22", "#0e4429", "#006d32", "#26a641", "#39d353"],
   dark: ["#161b22", "#0e4429", "#116a37", "#22c55e", "#39d353"],
+  light: ["#eaf5ec", "#bbf7d0", "#4ade80", "#16a34a", "#166534"],
 };
 
 const CalendarSkeleton = () => (
@@ -23,6 +27,10 @@ const CalendarSkeleton = () => (
 const GitHubSection = () => {
   const [graphLoaded, setGraphLoaded] = useState(false);
   const [graphError, setGraphError] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
+
+  const activityGraphUrl = isDark ? ACTIVITY_GRAPH_DARK : ACTIVITY_GRAPH_LIGHT;
 
   return (
     <section
@@ -46,23 +54,26 @@ const GitHubSection = () => {
           </p>
         </motion.div>
 
+        {/* Contribution calendar card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="glass-card rounded-2xl p-6 md:p-8 hover:glow-border transition-all duration-300"
+          className="rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden"
         >
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+          {/* Card header */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-6 py-5 border-b border-border">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Github className="text-primary" size={22} />
+              <div className="flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 shrink-0">
+                <Github className="text-primary" size={18} />
               </div>
               <div>
-                <h3 className="font-heading font-semibold text-foreground">
+                <h3 className="font-heading font-semibold text-foreground leading-tight">
                   @{GITHUB_USERNAME}
                 </h3>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-0.5 flex items-center gap-1">
+                  <GitCommitHorizontal size={11} />
                   Live contribution graph
                 </p>
               </div>
@@ -72,57 +83,73 @@ const GitHubSection = () => {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="View GitHub Profile (opens in new tab)"
-              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+                         border border-border bg-secondary/60 text-foreground text-sm font-medium
+                         hover:bg-primary hover:text-primary-foreground hover:border-primary
+                         transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-primary/20"
             >
-              <Github size={16} /> View GitHub Profile
-              <ExternalLink size={14} />
+              <Github size={15} />
+              View Profile
+              <ExternalLink size={13} className="opacity-70" />
             </a>
           </div>
 
-          <div className="overflow-x-auto flex justify-center">
-            <GitHubCalendar
-              username={GITHUB_USERNAME}
-              theme={calendarTheme}
-              colorScheme="dark"
-              fontSize={12}
-              blockSize={12}
-              blockMargin={4}
-              errorMessage="Unable to load GitHub contributions right now."
-            />
+          {/* Graph area — tinted inner container */}
+          <div className="px-6 py-6">
+            <div className="rounded-xl border border-border/60 bg-secondary/30 dark:bg-secondary/20 px-5 py-6 overflow-x-auto flex justify-center">
+              <GitHubCalendar
+                username={GITHUB_USERNAME}
+                theme={calendarTheme}
+                colorScheme={isDark ? "dark" : "light"}
+                fontSize={12}
+                blockSize={12}
+                blockMargin={4}
+                errorMessage="Unable to load GitHub contributions right now."
+              />
+            </div>
           </div>
         </motion.div>
 
+        {/* Activity graph card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="glass-card rounded-2xl p-4 md:p-6 mt-8 hover:glow-border transition-all duration-300"
+          className="rounded-2xl border border-border bg-card shadow-[var(--shadow-card)] overflow-hidden mt-6"
         >
-          <h3 className="font-heading font-semibold text-foreground mb-4 px-2">
-            Activity Graph
-          </h3>
-          <div className="relative w-full min-h-[200px] rounded-xl overflow-hidden">
-            {!graphLoaded && !graphError && (
-              <div className="absolute inset-0 bg-secondary/40 animate-pulse rounded-xl" />
-            )}
-            {graphError ? (
-              <div className="flex items-center justify-center h-[200px] text-sm text-muted-foreground">
-                Activity graph is temporarily unavailable.
-              </div>
-            ) : (
-              <img
-                src={ACTIVITY_GRAPH_URL}
-                alt={`${GITHUB_USERNAME} GitHub activity graph`}
-                loading="lazy"
-                decoding="async"
-                onLoad={() => setGraphLoaded(true)}
-                onError={() => setGraphError(true)}
-                className={`w-full h-auto rounded-xl transition-opacity duration-500 ${
-                  graphLoaded ? "opacity-100" : "opacity-0"
-                }`}
-              />
-            )}
+          <div className="px-6 py-5 border-b border-border">
+            <h3 className="font-heading font-semibold text-foreground">
+              Activity Graph
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              Commit frequency over the past year
+            </p>
+          </div>
+          <div className="p-4">
+            <div className="relative w-full min-h-[200px] rounded-xl overflow-hidden bg-secondary/20 dark:bg-secondary/30">
+              {!graphLoaded && !graphError && (
+                <div className="absolute inset-0 bg-secondary/40 animate-pulse rounded-xl" />
+              )}
+              {graphError ? (
+                <div className="flex items-center justify-center h-[200px] text-sm text-muted-foreground">
+                  Activity graph is temporarily unavailable.
+                </div>
+              ) : (
+                <img
+                  key={activityGraphUrl}
+                  src={activityGraphUrl}
+                  alt={`${GITHUB_USERNAME} GitHub activity graph`}
+                  loading="lazy"
+                  decoding="async"
+                  onLoad={() => setGraphLoaded(true)}
+                  onError={() => setGraphError(true)}
+                  className={`w-full h-auto rounded-xl transition-opacity duration-500 ${
+                    graphLoaded ? "opacity-100" : "opacity-0"
+                  }`}
+                />
+              )}
+            </div>
           </div>
         </motion.div>
       </div>

@@ -1,0 +1,69 @@
+The Dark/Light theme implementation needs improvement.
+
+There are two major UX issues that must be fixed.
+
+## 1. GitHub Contribution Section
+
+The GitHub contribution graph looks visually weak in Light Mode.
+
+Please redesign this section without changing its functionality.
+
+Requirements:
+
+- Make the contribution card look premium.
+- Add a subtle tinted background inside the graph container instead of plain white.
+- Use a soft border and elegant shadow.
+- Increase padding and spacing.
+- Improve typography hierarchy.
+- Keep rounded corners consistent with the rest of the website.
+- Improve the GitHub button styling so it matches the portfolio theme.
+- Make sure the graph adapts perfectly in both Light and Dark themes.
+- The entire section should feel modern like GitHub, Vercel or Linear.
+
+---
+
+## 2. Theme Switching Experience
+
+The current Dark/Light switch is noticeable and feels unprofessional.
+
+I want the switching experience to feel as smooth as premium websites like Apple, Vercel, Linear, Stripe or Framer.
+
+Requirements:
+
+- Eliminate visible flashing.
+- Eliminate layout shifting.
+- Eliminate noticeable repainting.
+- Theme changes should feel instant and fluid.
+
+Implement:
+
+• Proper CSS variables for all colors
+• Theme classes instead of replacing inline styles
+• Smooth color transitions (250–350ms)
+• GPU-accelerated animations where appropriate
+• Fade transition only for colors—not layout
+• Preserve scroll position
+• Preserve component state
+• No re-rendering of the page
+• No flickering on images
+• No flashing white screen
+• Apply transitions only after initial page load to prevent FOUC (Flash of Unstyled Content)
+
+Also:
+
+- Store the theme in localStorage.
+- Respect prefers-color-scheme on first visit.
+- Update the HTML class before the page paints.
+- Ensure the navbar, cards, buttons, forms, footer, and all sections transition smoothly.
+
+The toggle button itself should also be improved:
+
+- Animated sun/moon icon
+- Small rotation animation
+- Smooth scale on hover
+- Beautiful micro-interactions
+- Premium appearance
+
+Do NOT redesign the website.
+
+Keep the existing design, but make the theme switching experience feel production-quality and indistinguishable from high-end professional websites.

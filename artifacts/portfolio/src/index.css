@@ -102,21 +102,32 @@
 }
 
 @layer base {
-  /* Smooth transitions for every element when theme switches */
+  /* Smooth transitions for every element when theme switches.
+     Only color properties — no layout, no transform — so nothing shifts. */
   *,
   *::before,
   *::after {
     @apply border-border;
-    transition-property: background-color, border-color, color, box-shadow;
-    transition-duration: 350ms;
+    transition-property: background-color, border-color, color, box-shadow, fill, stroke;
+    transition-duration: 300ms;
     transition-timing-function: ease;
   }
 
-  /* Don't animate layout or transform properties during theme switch */
+  /* Preserve existing motion/transform transitions on animated elements */
   *:where([class*="animate-"]),
   *:where([class*="transition-"]) {
     transition-property: background-color, border-color, color, box-shadow,
-      transform, opacity;
+      fill, stroke, transform, opacity;
+  }
+
+  /* Injected by index.html blocking script — suppresses ALL transitions during
+     initial paint so the correct theme appears instantly with zero flash. */
+  .no-transitions,
+  .no-transitions *,
+  .no-transitions *::before,
+  .no-transitions *::after {
+    transition: none !important;
+    animation-duration: 0.01ms !important;
   }
 
   body {
@@ -143,7 +154,7 @@
   }
 
   /* ── Light mode glass card ────────────────────────────── */
-  :root:not(.dark) .glass-card {
+  html:not(.dark) .glass-card {
     background: hsl(0 0% 100% / 0.85);
     border: 1px solid hsl(220 13% 87%);
     backdrop-filter: blur(12px);

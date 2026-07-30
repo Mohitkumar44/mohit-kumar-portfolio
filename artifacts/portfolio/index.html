@@ -2,6 +2,32 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <!-- Blocking theme script: applies .dark class before first paint to prevent FOUC -->
+    <script>
+      (function () {
+        var stored = localStorage.getItem('portfolio-theme');
+        var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        var isDark =
+          stored === 'dark' ||
+          (stored === 'system' && prefersDark) ||
+          (!stored && prefersDark);
+        if (isDark) document.documentElement.classList.add('dark');
+        // Block all transitions during initial paint so there's no animated flash
+        document.documentElement.classList.add('no-transitions');
+        function enableTransitions() {
+          requestAnimationFrame(function () {
+            requestAnimationFrame(function () {
+              document.documentElement.classList.remove('no-transitions');
+            });
+          });
+        }
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', enableTransitions);
+        } else {
+          enableTransitions();
+        }
+      })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Mohit Kumar | Full Stack Developer & DSA Enthusiast</title>
     <meta name="description" content="Portfolio of Mohit Kumar — B.Tech Computer Science student at REC Banda, Full Stack Developer skilled in C++, Python, and modern web technologies." />
