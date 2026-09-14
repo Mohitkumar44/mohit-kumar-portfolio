@@ -29,6 +29,13 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.get("/", (_req, res) => {
+  res.json({
+    status: "ok",
+    message: "Portfolio API Server is running",
+  });
+});
+
 app.use("/api", router);
 app.use(router);
 
