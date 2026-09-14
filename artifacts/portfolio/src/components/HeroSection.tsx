@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { useState, useEffect, useMemo, useRef } from "react";
 import { ArrowDown, ArrowRight, Download, Github, Linkedin, Code } from "lucide-react";
-import profileImg from "@/assets/profile.jpg";
+import profileImg from "@/assets/profile.png";
 
 interface TypewriterTextProps {
   phrases: string[];
