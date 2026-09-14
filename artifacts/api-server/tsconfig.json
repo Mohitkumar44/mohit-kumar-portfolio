@@ -4,9 +4,9 @@
     "incremental": true,
     "tsBuildInfoFile": ".tsbuildinfo",
     "outDir": "dist",
-    "rootDir": ".",
+    "rootDir": "src",
     "types": ["node"],
     "esModuleInterop": true
   },
-  "include": ["src", "api"]
+  "include": ["src"]
 }
