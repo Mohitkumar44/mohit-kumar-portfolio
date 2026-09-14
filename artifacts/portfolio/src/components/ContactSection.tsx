@@ -7,7 +7,7 @@ const SERVICE_ID = "service_n64gr5j";
 const TEMPLATE_ID = "template_n3j9roc";
 const PUBLIC_KEY = "vDp6zV3u-flS-iBiH";
 
-const EMAIL = "mohitkumar.rec@gmail.com";
+const EMAIL = "mohit.kumar162534@gmail.com";
 const LOCATION = "Banda, Uttar Pradesh, India";
 const LINKEDIN = "https://www.linkedin.com/in/mohit-kumar-84354032a/";
 const GITHUB = "https://github.com/Mohitkumar44";
