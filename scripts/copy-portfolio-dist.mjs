@@ -10,7 +10,7 @@ const sourceDirectory = path.join(
   'dist',
   'public',
 );
-const outputDirectory = path.join(repositoryRoot, 'public');
+const outputDirectory = path.join(process.cwd(), 'public');
 
 if (!existsSync(sourceDirectory)) {
   throw new Error(`Portfolio build output not found: ${sourceDirectory}`);

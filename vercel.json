@@ -1,7 +1,7 @@
 {
   "framework": "vite",
   "installCommand": "pnpm install --frozen-lockfile",
-  "buildCommand": "pnpm --filter @workspace/portfolio run build && node scripts/copy-portfolio-dist.mjs",
+  "buildCommand": "pnpm --filter @workspace/portfolio run build && node ../../scripts/copy-portfolio-dist.mjs",
   "outputDirectory": "public",
   "rewrites": [
     {
